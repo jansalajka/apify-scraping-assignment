@@ -1,12 +1,12 @@
 import {Product, ProductScraper} from "./ProductScraper.js";
 
-interface ProductScraperAccumulatorConfig {
+interface ProductScraperDriverConfig {
     initialPriceRangeDistance: number;
     increasePriceRangeDistanceBy: number;
     desiredProductCountPerApiCall: number;
 }
 
-const DEFAULT_CONFIG: ProductScraperAccumulatorConfig = {
+const DEFAULT_CONFIG: ProductScraperDriverConfig = {
     initialPriceRangeDistance: 10,
     increasePriceRangeDistanceBy: 10,
     desiredProductCountPerApiCall: 100,
@@ -18,10 +18,10 @@ const DEFAULT_CONFIG: ProductScraperAccumulatorConfig = {
 export class ProductScraperDriver {
     private readonly MAXIMUM_PRICE = 100000;
     private readonly scraper: ProductScraper;
-    private readonly config: ProductScraperAccumulatorConfig;
+    private readonly config: ProductScraperDriverConfig;
     private products: Product[] = [];
 
-    public constructor(config?: Partial<ProductScraperAccumulatorConfig>) {
+    public constructor(config?: Partial<ProductScraperDriverConfig>) {
         const mergedConfig = {
             ...DEFAULT_CONFIG,
             ...config
@@ -109,7 +109,7 @@ export class ProductScraperDriver {
      * @param config
      * @private
      */
-    private validateConfigOrThrow(config: ProductScraperAccumulatorConfig): void {
+    private validateConfigOrThrow(config: ProductScraperDriverConfig): void {
         if (config.initialPriceRangeDistance < 1) {
             throw new Error("Default steps must be greater than 0");
         }
