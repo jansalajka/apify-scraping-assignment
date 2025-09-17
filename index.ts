@@ -2,7 +2,7 @@ import {ProductScraperDriver} from "./lib/ProductScraperDriver.js";
 
 try {
     const scraper = new ProductScraperDriver({
-        initialPriceRangeDistance: 100,
+        initialPriceRangeDistance: 10,
         increasePriceRangeDistanceBy: 100,
         desiredProductCountPerApiCall: 500,
     });
