@@ -62,7 +62,6 @@ export class FakeApiResponseHelper {
 
     /**
      * Generates a fake API response (simulates /products endpoint)
-     * --- In a real-world scenario, you would need to replace this implementation with a real API client like Axios.
      */
     public generateResponse(): ProductApiResponse {
         const total = this.config.totalProductCount;
