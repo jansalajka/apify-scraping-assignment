@@ -1,14 +1,14 @@
 import {Product, ProductScraper} from "./ProductScraper.js";
 
 interface ProductScraperDriverConfig {
-    initialPriceRangeDistance: number;
-    increasePriceRangeDistanceBy: number;
+    initialPriceDistance: number;
+    increasePriceDistanceBy: number;
     desiredProductCountPerApiCall: number;
 }
 
 const DEFAULT_CONFIG: ProductScraperDriverConfig = {
-    initialPriceRangeDistance: 10,
-    increasePriceRangeDistanceBy: 10,
+    initialPriceDistance: 10,
+    increasePriceDistanceBy: 10,
     desiredProductCountPerApiCall: 100,
 };
 
@@ -39,8 +39,8 @@ export class ProductScraperDriver {
      */
     public async fetchAllProducts(): Promise<Product[]> {
         let minPrice = 0;
-        let maxPrice = this.config.initialPriceRangeDistance;
-        let priceRangeDistance = this.config.initialPriceRangeDistance;
+        let maxPrice = this.config.initialPriceDistance;
+        let priceDistance = this.config.initialPriceDistance;
 
         const { total } = await this.scraper.fetchProducts();
 
@@ -49,10 +49,10 @@ export class ProductScraperDriver {
 
             if (response.total > response.count) {
                 // we are querying too many products, we need to narrow the price range and try again
-                priceRangeDistance -= 1;
-                maxPrice = minPrice + priceRangeDistance;
+                priceDistance -= 1;
+                maxPrice = minPrice + priceDistance;
 
-                if (priceRangeDistance < 1) {
+                if (priceDistance < 1) {
                     throw new Error("Cannot narrow price range distance any further.");
                 }
 
@@ -68,41 +68,41 @@ export class ProductScraperDriver {
                 break;
             }
 
-            priceRangeDistance = this.calculatePriceRangeDistance(priceRangeDistance, response.count);
+            priceDistance = this.calculatePriceDistance(priceDistance, response.count);
             minPrice = maxPrice;
-            maxPrice += priceRangeDistance;
+            maxPrice += priceDistance;
         }
 
         return this.products;
     }
 
     /**
-     * Calculates the next price range distance based on the current distance and the number of products fetched.
+     * Calculates the next price distance based on the current distance and the number of products fetched.
      * --- This logic comes from an idea that the wider the price range, the more products we fetch.
-     * --- So we start with a small range distance and increase it until we reach the desired product count per response.
+     * --- So we start with a small price distance and increase it until we reach the desired product count per response.
      * --- This will make scraping faster and lower amount of API calls.
      * --- NOTE: the fake API doesn't take this into account and always returns a random number of products.
-     * @param currentDistance
+     * @param priceDistance
      * @param productCount
      * @private
      */
-    private calculatePriceRangeDistance(
-        currentDistance: number,
+    private calculatePriceDistance(
+        priceDistance: number,
         productCount: number,
     ): number {
         if (productCount > this.config.desiredProductCountPerApiCall) {
             // we need to decrease the distance as we are getting enough products
-            const adjustedStepsLength = currentDistance - this.config.increasePriceRangeDistanceBy;
+            const adjustedStepsLength = priceDistance - this.config.increasePriceDistanceBy;
 
             if (adjustedStepsLength > 1) {
                 return adjustedStepsLength;
             }
 
-            return currentDistance;
+            return priceDistance;
         }
 
         // we can increase the distance as we are not getting enough products
-        return currentDistance + this.config.increasePriceRangeDistanceBy;
+        return priceDistance + this.config.increasePriceDistanceBy;
     }
 
     /**
@@ -111,11 +111,11 @@ export class ProductScraperDriver {
      * @private
      */
     private validateConfigOrThrow(config: ProductScraperDriverConfig): void {
-        if (config.initialPriceRangeDistance < 1) {
+        if (config.initialPriceDistance < 1) {
             throw new Error("Default steps must be greater than 0");
         }
 
-        if (config.increasePriceRangeDistanceBy < 0) {
+        if (config.increasePriceDistanceBy < 0) {
             throw new Error("Increase steps by must be greater than 0 or equal");
         }
 
