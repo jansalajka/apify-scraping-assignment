@@ -92,10 +92,10 @@ export class ProductScraperDriver {
     ): number {
         if (productCount > this.config.desiredProductCountPerApiCall) {
             // we need to decrease the distance as we are getting enough products
-            const adjustedStepsLength = priceDistance - this.config.increasePriceDistanceBy;
+            const adjustedPriceDistance = priceDistance - this.config.increasePriceDistanceBy;
 
-            if (adjustedStepsLength > 1) {
-                return adjustedStepsLength;
+            if (adjustedPriceDistance > 1) {
+                return adjustedPriceDistance;
             }
 
             return priceDistance;
