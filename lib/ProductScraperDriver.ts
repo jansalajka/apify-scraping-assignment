@@ -80,7 +80,7 @@ export class ProductScraperDriver {
      * Calculates the next price distance based on the current distance and the number of products fetched.
      * --- This logic comes from an idea that the wider the price range, the more products we fetch.
      * --- So we start with a small price distance and increase it until we reach the desired product count per response.
-     * --- This will make scraping faster and lower amount of API calls.
+     * --- This will make scraping faster and lower the amount of API calls.
      * --- NOTE: the fake API doesn't take this into account and always returns a random number of products.
      * @param priceDistance
      * @param productCount
