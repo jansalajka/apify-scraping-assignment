@@ -35,45 +35,12 @@ export class FakeApiResponseHelper {
     }
 
     /**
-     * Generates a fake product with a random price.
-     * @param id
-     * @param minPrice
-     * @param maxPrice
-     * @private
-     */
-    private generateProduct(id: number, minPrice: number, maxPrice: number): Product {
-        const name = `Product ${this.numberOfReturnedProducts + id}`;
-        const price = NumberUtils.getRandomNumber(minPrice, maxPrice);
-        return {name, price};
-    }
-
-    /**
-     * Generates a list of fake products.
-     * @param count
-     * @param minPrice
-     * @param maxPrice
-     * @private
-     */
-    private generateProductList(count: number, minPrice: number, maxPrice: number): Product[] {
-        return Array.from({length: count}, (_, i) =>
-            this.generateProduct(i + 1, minPrice, maxPrice)
-        );
-    }
-
-    /**
      * Generates a fake API response (simulates /products endpoint)
      */
     public generateResponse(): ProductApiResponse {
         const total = this.config.totalProductCount;
         const count = this.config.maxItemsPerResponse;
-
-        const products: Product[] = Array.from({length: count}, (_, i) =>
-            this.generateProduct(
-                i + 1,
-                this.config.minimumProductPrice,
-                this.config.maximumProductPrice
-            )
-        );
+        const products: Product[] = this.generateProductList(count, this.config.minimumProductPrice, this.config.maximumProductPrice);
 
         return { total, count, products };
     }
@@ -105,5 +72,31 @@ export class FakeApiResponseHelper {
         console.log("Scraped products:", products);
 
         return { total, count, products };
+    }
+
+    /**
+     * Generates a fake product with a random price.
+     * @param id
+     * @param minPrice
+     * @param maxPrice
+     * @private
+     */
+    private generateProduct(id: number, minPrice: number, maxPrice: number): Product {
+        const name = `Product ${this.numberOfReturnedProducts + id}`;
+        const price = NumberUtils.getRandomNumber(minPrice, maxPrice);
+        return {name, price};
+    }
+
+    /**
+     * Generates a list of fake products.
+     * @param count
+     * @param minPrice
+     * @param maxPrice
+     * @private
+     */
+    private generateProductList(count: number, minPrice: number, maxPrice: number): Product[] {
+        return Array.from({length: count}, (_, i) =>
+            this.generateProduct(i + 1, minPrice, maxPrice)
+        );
     }
 }
